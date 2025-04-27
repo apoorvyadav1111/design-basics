@@ -1,23 +1,4 @@
-
-class Vehicle:
-    def __init__(self, license_plate):
-        self.license_plate = license_plate
-
-
-class Car(Vehicle):
-    def __init__(self, license_plate):
-        super().__init__(license_plate)
-        self.vehicle_type = "car"
-class Motorcycle(Vehicle):
-    def __init__(self, license_plate):
-        super().__init__(license_plate)
-        self.vehicle_type = "motorcycle"
-
-class EV(Vehicle):
-    def __init__(self, license_plate):
-        super().__init__(license_plate)
-        self.vehicle_type = "ev"
-
+from vehicle import Vehicle, EV, Motorcycle, Car
 class ParkingSpace:
     def __init__(self, id, is_available):
         self.id = id
@@ -93,11 +74,14 @@ class ParkingLot:
                 return space
         return None
     
-    def unpark_vehicle(self, vehicle):
-        space = self.find_vehicle(vehicle.license_plate)
-        if space:
-            space.unpark()
-            self.free_slots[vehicle.vehicle_type] += 1
+    def unpark_vehicle(self, vehicle, parking_space):
+        if parking_space.unpark():
+            if isinstance(vehicle, EV):
+                self.free_slots["ev"] += 1
+            elif isinstance(vehicle, Motorcycle):
+                self.free_slots["motorcycle"] += 1
+            else:
+                self.free_slots["car"] += 1
             return True
         return False
     
@@ -118,14 +102,33 @@ class ParkingLot:
         return None
     
     
-class VehicleFactory:
+class ParkingLotManager:
     def __init__(self):
-        self.vehicle_types = {
-            "car": Car,
-            "motorcycle": Motorcycle,
-            "ev": EV
-        }
-    def build_vehicle(self, vehicle_type, license_plate):
-        return self.vehicle_types[vehicle_type](license_plate)
+        self.parking_lot = ParkingLot(100, 100, 100)
+        self.vehicles_to_parking_spot = {}
+    
+    def park_vehicle(self, vehicle):
+        if vehicle in self.vehicles_to_parking_spot:
+            return False
+        parking_spot = self.parking_lot.park_vehicle(vehicle)
+        if parking_spot:
+            self.vehicles_to_parking_spot[vehicle] = parking_spot
+            return True
+        return False
+        
+    
+    def unpark_vehicle(self, vehicle):
+        if vehicle not in self.vehicles_to_parking_spot:
+            return False
+        parking_spot = self.vehicles_to_parking_spot[vehicle]
+        if self.parking_lot.unpark_vehicle(vehicle):
+            del self.vehicles_to_parking_spot[vehicle]
+            return True
+        return False
+    def find_vehicle(self, vehicle):
+        return vehicle in self.vehicles_to_parking_spot
+    
+    def free_slots_count(self):
+        return self.parking_lot.free_slots_count()
 
 

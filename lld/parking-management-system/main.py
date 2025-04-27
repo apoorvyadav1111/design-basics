@@ -1,12 +1,15 @@
-from parking_lot import ParkingLot, VehicleFactory
-
-parking_lot = ParkingLot(10, 10, 10)
+from parking_lot import ParkingLotManager
+from vehicle import Car, Motorcycle, EV
+from vehicle import VehicleFactory
 
 
 def main():
-    all_vehicles = []
+    all_vehicles = {}
+    parking_lot_manager = ParkingLotManager()
     vehicle_factory = VehicleFactory()
+
     while True:
+        print()
         print("1. Create vehicle")
         print("2. Remove vehicle")
         print("3. List vehicles")
@@ -27,30 +30,47 @@ def main():
                 vehicle_type = "motorcycle"
             elif vehicle_type_int == 3:
                 vehicle_type = "ev"
+            else:
+                print("Invalid vehicle type")
+                continue
             license_plate = input("Enter the license plate: ")
             vehicle = vehicle_factory.build_vehicle(vehicle_type, license_plate)
-            all_vehicles.append(vehicle)
+            if license_plate in all_vehicles:
+                print("Vehicle already exists")
+            else:
+                all_vehicles[license_plate] = vehicle
         elif choice == 2:
             license_plate = input("Enter the license plate: ")
-            for vehicle in all_vehicles:
-                if vehicle.license_plate == license_plate:
-                    all_vehicles.remove(vehicle)
-                    break
+            if license_plate in all_vehicles:
+                del all_vehicles[license_plate]
+            else:
+                print("Vehicle not found")
         elif choice == 3:
-            for index, vehicle in enumerate(all_vehicles):
-                print(str(index) + ". " + vehicle.vehicle_type + " " + vehicle.license_plate)
+            for license_plate, vehicle in all_vehicles.items():
+                print(license_plate + " " + vehicle.vehicle_type)
         elif choice == 4:
-            vehicle_index = int(input("Enter the index of the vehicle from 0 to " + str(len(all_vehicles) - 1) + ": "))
-            parking_lot.park_vehicle(all_vehicles[vehicle_index])
+            license_plate = input("Enter the license plate: ")
+            if license_plate in all_vehicles:
+                if parking_lot_manager.find_vehicle(license_plate):
+                    print("Vehicle already parked")
+                else:
+                    if parking_lot_manager.park_vehicle(all_vehicles[license_plate]):
+                        print("Vehicle parked")
+                    else:
+                        print("Unable to park vehicle")
+            else:
+                print("Vehicle not found")
         elif choice == 5:
             license_plate = input("Enter the license plate: ")
-            for vehicle in all_vehicles:
-                if vehicle.license_plate == license_plate:
-                    parking_lot.unpark_vehicle(vehicle)
-                    all_vehicles.remove(vehicle)
-                    break
+            if license_plate in all_vehicles:
+                if parking_lot_manager.unpark_vehicle(all_vehicles[license_plate]):
+                    print("Vehicle unparked")
+                else:
+                    print("Vehicle already parked")
+            else:
+                print("Vehicle not found")
         elif choice == 6:
-            print(parking_lot.free_slots_count())
+            print(parking_lot_manager.free_slots_count())
         elif choice == 7:
             break
 
