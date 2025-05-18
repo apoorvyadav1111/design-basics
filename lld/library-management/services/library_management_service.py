@@ -1,5 +1,4 @@
-from typing import Optional
-from services.item_service import ItemService
+ from services.item_service import ItemService
 from services.member_service import MemberService
 from services.ledger_service import LedgerService
 from entities.enums import ItemStatus, MembershipStatus
