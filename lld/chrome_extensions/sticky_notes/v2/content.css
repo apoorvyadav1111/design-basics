@@ -1,0 +1,83 @@
+.sticky-note {
+  position: absolute;
+  width: 250px;
+  min-height: 120px;
+  padding: 10px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  z-index: 9999;
+  font-family: Arial, sans-serif;
+  color: #333;
+  display: flex;
+  flex-direction: column;
+}
+
+.sticky-note p {
+  margin: 0;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+
+.note-close {
+  position: absolute;
+  top: 5px;
+  right: 8px;
+  cursor: pointer;
+  font-size: 18px;
+  color: #555;
+  background: none;
+  border: none;
+}
+
+.note-close:hover {
+  color: #000;
+}
+
+.sticky-note textarea {
+  width: 100%;
+  flex-grow: 1;
+  border: none;
+  background: transparent;
+  resize: none;
+  font-size: 14px;
+  outline: none;
+  padding: 0;
+}
+
+.note-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 10px;
+}
+
+.note-controls button {
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.note-controls button:hover {
+  background-color: #45a049;
+}
+
+.color-palette {
+  display: flex;
+  gap: 5px;
+}
+
+.color-swatch {
+  width: 25px;
+  height: 25px;
+  border-radius: 50%;
+  border: 1px solid #ddd;
+  cursor: pointer;
+  transition: transform 0.2s ease-in-out;
+}
+
+.color-swatch:hover {
+  transform: scale(1.1);
+}
